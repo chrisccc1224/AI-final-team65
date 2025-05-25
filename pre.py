@@ -30,3 +30,6 @@ def preprocess():
     df= df.drop(columns=["imdb_score"])
     return df,scores
 
+
+#test
+
