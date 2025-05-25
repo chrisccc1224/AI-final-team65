@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 def preprocess():
     df= pd.read_csv("movie_metadata.csv")
     #drop useless(we think it's) columns
-    df=df.drop(columns=["color","director_name","actor_1_name","actor_2_name","actor_3_name","language","country","movie_imdb_link","plot_keywords","movie_title","title_year","cast_total_facebook_likes","facenumber_in_poster","aspect_ratio","movie_facebook_likes"])
+    df=df.drop(columns=["color","director_name","actor_1_name","actor_2_name","actor_3_name","language","country","movie_imdb_link","plot_keywords","movie_title"])
     #drop row with missing(NAN)value
     df=df.dropna()
     # count how many movies (row )left

@@ -13,6 +13,7 @@ df,scores=preprocess()
 
 
 X_train,X_test,y_train,y_test=train_test_split(df,scores,test_size=0.2,shuffle=True,random_state=42)
+
 ## model from sklearn
 model=RandomForestRegressor(
     n_estimators=50,
@@ -33,23 +34,23 @@ print(f"R^2 Score: {r2}")
 
 
 # Decision tree
-model = DecisionTree(
-    max_depth=None,
-    max_features=None,
-)
-model.fit(X_train,y_train)
-y_pred=model.predict(X_test)
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
+# model = DecisionTree(
+#     max_depth=None,
+#     max_features=None,
+# )
+# model.fit(X_train,y_train)
+# y_pred=model.predict(X_test)
+# mse = mean_squared_error(y_test, y_pred)
+# r2 = r2_score(y_test, y_pred)
 
-print(f"Mean Squared Error: {mse}")
-print(f"R^2 Score: {r2}")
+# print(f"Mean Squared Error: {mse}")
+# print(f"R^2 Score: {r2}")
 
 
 # our random forest
 model = RandomForest(
-    n_trees=50,
-    max_depth=None,
+    n_trees=10,
+    max_depth=5,
     max_features='sqrt'
 )
 model.fit(X_train, y_train)
