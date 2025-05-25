@@ -63,3 +63,5 @@ r2 = r2_score(y_test, y_pred)
 print(y_pred[:10])  # Print first 10 predictions
 print(f"Mean Squared Error: {mse}")
 print(f"R^2 Score: {r2}")
+
+#test spencer
