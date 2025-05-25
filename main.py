@@ -49,7 +49,7 @@ print(f"R^2 Score: {r2}")
 
 # our random forest
 model = RandomForest(
-    n_trees=10,
+    n_trees=10,#check 50
     max_depth=5,
     max_features='sqrt'
 )
