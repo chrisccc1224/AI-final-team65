@@ -106,6 +106,5 @@ class RandomForest:
 
     def predict(self, X: pd.DataFrame) -> np.ndarray:
         predictions= np.array([tree.predict(X) for tree in self.trees])
-        print(X.shape)
         # take the mean of each trees 
         return predictions.mean(axis=0)
