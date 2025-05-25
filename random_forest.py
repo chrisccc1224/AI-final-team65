@@ -100,7 +100,7 @@ class RandomForest:
             X_sample = X.iloc[idxs].reset_index(drop=True)
             y_sample = y[idxs]
 
-            tree = DecisionTreeRegressorScratch(max_depth=self.max_depth, max_features=self.max_features)
+            tree = DecisionTree(max_depth=self.max_depth, max_features=self.max_features)
             tree.fit(X_sample, y_sample)
             self.trees.append(tree)
 
