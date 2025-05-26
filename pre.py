@@ -28,5 +28,7 @@ def preprocess():
     #the value we want to predict
     scores=df["imdb_score"].values
     df= df.drop(columns=["imdb_score"])
-    return df,scores
+    X = np.array(df)
+    y = np.array(scores)
+    return X, y
 
