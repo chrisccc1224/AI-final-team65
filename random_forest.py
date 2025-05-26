@@ -11,24 +11,24 @@ class DecisionTree:
         self.max_features = max_features
         self.tree = None
 
-    def fit(self, X: pd.DataFrame, y: np.ndarray):
-        self.features = X.columns.tolist()
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        self.features = list(range(X.shape[1]))
         self.tree = self._build_tree(X, y, depth=0)
 
-    def predict(self, X: pd.DataFrame) -> np.ndarray:
-        return np.array([self._predict_tree(row, self.tree) for _, row in X.iterrows()])
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        return np.array([self._predict_tree(row, self.tree) for row in X])
 
-    def _build_tree(self, X: pd.DataFrame, y: np.ndarray, depth: int):
-        if len(set(y)) == 1 or depth == self.max_depth or X.empty:
+    def _build_tree(self, X: np.ndarray, y: np.ndarray, depth: int):
+        if len(set(y)) == 1 or depth == self.max_depth or X.shape[0] == 0:
             return {'type': 'leaf', 'value': np.mean(y)}
 
         feature_idx, threshold = self._best_split(X, y)
         if feature_idx is None:
             return {'type': 'leaf', 'value': np.mean(y)}
 
-        left_mask = X.iloc[:, feature_idx] <= threshold
-        X_left, y_left = X[left_mask].reset_index(drop=True), y[left_mask]
-        X_right, y_right = X[~left_mask].reset_index(drop=True), y[~left_mask]
+        left_mask = X[:, feature_idx] <= threshold
+        X_left, y_left = X[left_mask], y[left_mask]
+        X_right, y_right = X[~left_mask], y[~left_mask]
 
         return {
             'type': 'node',
@@ -41,12 +41,12 @@ class DecisionTree:
     def _predict_tree(self, row, node):
         if node['type'] == 'leaf':
             return node['value']
-        if row.iloc[node['feature_index']] <= node['threshold']:
+        if row[node['feature_index']] <= node['threshold']:
             return self._predict_tree(row, node['left'])
         else:
             return self._predict_tree(row, node['right'])
 
-    def _best_split(self, X: pd.DataFrame, y: np.ndarray) -> Tuple[int, float]:
+    def _best_split(self, X: np.ndarray, y: np.ndarray) -> Tuple[int, float]:
         best_mse = float('inf')
         best_feat = None
         best_thresh = None
@@ -68,11 +68,11 @@ class DecisionTree:
         )
 
         for feature_idx in feature_indices:
-            values = X.iloc[:, feature_idx].sort_values().unique()
+            values = np.unique(np.sort(X[:, feature_idx]))
             for i in range(1, len(values)):
                 thresh = (values[i - 1] + values[i]) / 2
-                left = y[X.iloc[:, feature_idx] <= thresh]
-                right = y[X.iloc[:, feature_idx] > thresh]
+                left = y[X[:, feature_idx] <= thresh]
+                right = y[X[:, feature_idx] > thresh]
                 if len(left) == 0 or len(right) == 0:
                     continue
                 mse = (len(left) * np.var(left) + len(right) * np.var(right)) / len(y)
@@ -89,7 +89,7 @@ class RandomForest:
         self.max_features = max_features # how many feature is used in trees
         self.trees = []
 
-    def fit(self, X: pd.DataFrame, y: np.ndarray):
+    def fit(self, X: np.ndarray, y: np.ndarray):
         self.trees = []
         for _ in tqdm(range(self.n_trees), desc="Training trees..."):
             # bootstrap sampling:
@@ -97,14 +97,14 @@ class RandomForest:
             idxs = np.random.choice(len(X), len(X), replace=True)
 
             # select the bootstrap sample
-            X_sample = X.iloc[idxs].reset_index(drop=True)
+            X_sample = X[idxs]
             y_sample = y[idxs]
 
             tree = DecisionTree(max_depth=self.max_depth, max_features=self.max_features)
             tree.fit(X_sample, y_sample)
             self.trees.append(tree)
 
-    def predict(self, X: pd.DataFrame) -> np.ndarray:
+    def predict(self, X: np.ndarray) -> np.ndarray:
         predictions= np.array([tree.predict(X) for tree in self.trees])
         # take the mean of each trees 
         return predictions.mean(axis=0)
