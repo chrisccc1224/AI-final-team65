@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
@@ -48,16 +49,18 @@ print(f"R^2 Score: {r2}")
 
 
 # our random forest
-tree_num = np.arange(4, 71, 3)
-mse_list = [0] * len(tree_num)
-r2_list = [0] * len(tree_num)
-for _ in range(10):
-    for i in tree_num:
-        print(f"Training Random Forest with {i} trees")
+tree_num = np.arange(4, 61, 3)
+depth_num = np.arange(7, 18, 1)
+mse_list = np.zeros((len(depth_num), len(tree_num)))
+r2_list = np.zeros((len(depth_num), len(tree_num)))
+for i, depth in enumerate(depth_num):
+    print(f"Training Random Forest with max depth {depth}")
+    for j, n_tree in enumerate(tree_num):
+        print(f"Training Random Forest with {n_tree} trees")
         # Initialize the RandomForest model
         model = RandomForest(
-            n_trees=i,
-            max_depth=5,
+            n_trees=n_tree,
+            max_depth=depth,
             max_features='sqrt'
         )
         model.fit(X_train, y_train)
@@ -65,27 +68,22 @@ for _ in range(10):
         y_pred=model.predict(X_test)
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
-        """print(y_pred[:10])  # Print first 10 predictions
-        print(f"Mean Squared Error: {mse}")
-        print(f"R^2 Score: {r2}")"""
-        mse_list[i // 3 - 1] += mse
-        r2_list[i // 3 - 1] += r2
+        mse_list[i, j] = mse
+        r2_list[i, j] = r2
 
-mse_list = np.array(mse_list)
-r2_list = np.array(r2_list)
+mse_list = pd.DataFrame(mse_list, index=depth_num, columns=tree_num)
+r2_list = pd.DataFrame(r2_list, index=depth_num, columns=tree_num)
 # evaluate
-plt.plot(tree_num, mse_list / 10, label='MSE', marker='o')
+sns.heatmap(mse_list, annot=True, fmt=".4f", cmap='viridis')
 plt.xlabel('Number of Trees')
-plt.ylabel('MSE')
-plt.title('Number of Trees vs MSE')
-plt.legend()
-plt.savefig('mse_vs_trees.png')
+plt.ylabel('Depth of Trees')
+plt.title('MSE heatmap')
+plt.savefig('mse_heatmap.png')
 plt.show()
 
-plt.plot(tree_num, r2_list / 10, label='R^2', marker='o')
+sns.heatmap(r2_list, annot=True, fmt=".4f", cmap='viridis')
 plt.xlabel('Number of Trees')
-plt.ylabel('R^2')
-plt.title('Number of Trees vs R^2')
-plt.legend()
-plt.savefig('r2_vs_trees.png')
+plt.ylabel('Depth of Trees')
+plt.title('R^2 heatmap')
+plt.savefig('r2_heatmap.png')
 plt.show()
