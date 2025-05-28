@@ -50,7 +50,7 @@ print(f"R^2 Score: {r2}")
 
 # our random forest
 tree_num = np.arange(25, 55, 3)
-depth_num = np.arange(25, 55, 3)
+depth_num = np.arange(20, 55, 3)
 mse_list = np.zeros((len(depth_num), len(tree_num)))
 r2_list = np.zeros((len(depth_num), len(tree_num)))
 for i, depth in enumerate(depth_num):
