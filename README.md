@@ -28,3 +28,6 @@ pip install -r requirements.txt
 - MSE =
 - R^2 =
 - experiment outcome can be reached in report 
+
+## Reference
+https://www.youtube.com/watch?v=J4Wdy0Wc_xQ
