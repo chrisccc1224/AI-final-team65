@@ -20,13 +20,13 @@ pip install -r requirements.txt
 - if want to try each experiment, run the block with corresponding comment
 
 ## Hyperparameters
-- n_tree = 
-- max_depth = 
-- max_features =
+- n_tree = 40
+- max_depth = 40
+- max_features = 23
 
 ## Experiment results
-- MSE =
-- R^2 =
+- MSE = 0.4256
+- R^2 = 0.6348
 - experiment outcome can be reached in report 
 
 ## Reference
