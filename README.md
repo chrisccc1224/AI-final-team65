@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 ## Hyperparameters
 - n_tree = 40
-- max_depth = 40
+- max_depth = 19
 - max_features = 23
 
 ## Experiment results
